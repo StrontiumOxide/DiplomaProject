@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Зелёный Кролик</title>
+  <link rel="stylesheet" href="{% static 'market/css/main_page.css' %}">
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <h1>Зелёный Кролик</h1>
+      <p class="slogan">Прыгаем в мир технологий с морковкой в руках!</p>
+    </header>
+
+    <section class="api-sections">
+      <!-- Секция 1 -->
+      <article class="api-section">
+        <header class="section-header">
+          <span class="section-number">1</span>
+          <h2 class="section-title">API для товаров</h2>
+        </header>
+        
+        <section class="endpoints">
+          <article class="endpoint">
+            <h3>1.1 Получение списка товаров</h3>
+            <p class="api-description">GET /api/products/</p>
+          </article>
+          
+          <article class="endpoint">
+            <h3>1.2 Создание товара</h3>
+            <p class="api-description">POST /api/products/</p>
+          </article>
+        </section>
+      </article>
+
+      <!-- Секция 2 -->
+      <article class="api-section">
+        <header class="section-header">
+          <span class="section-number">2</span>
+          <h2 class="section-title">API для заказов</h2>
+        </header>
+        
+        <section class="endpoints">
+          <article class="endpoint">
+            <h3>2.1 История заказов</h3>
+            <p class="api-description">GET /api/orders/</p>
+          </article>
+        </section>
+      </article>
+
+      <!-- Секция 3 -->
+      <article class="api-section">
+        <header class="section-header">
+          <span class="section-number">3</span>
+          <h2 class="section-title">API для пользователей</h2>
+        </header>
+        
+        <section class="endpoints">
+          <article class="endpoint">
+            <h3>3.1 Регистрация</h3>
+            <p class="api-description">POST /api/register/</p>
+          </article>
+          
+          <article class="endpoint">
+            <h3>3.2 Профиль</h3>
+            <p class="api-description">GET /api/profile/</p>
+          </article>
+        </section>
+      </article>
+
+    </section>
+  </main>
+
+  <script src="{% static 'market/js/main_page.js' %}"></script>
+</body>
+</html>
