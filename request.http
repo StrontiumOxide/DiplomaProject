@@ -1,0 +1,77 @@
+### 1.1 Получить список всех пользователей
+GET http://127.0.0.1:8000/api/users/
+Content-Type: application/json
+
+### 1.2 Создать нового пользователя
+POST http://127.0.0.1:8000/api/user/
+Content-Type: application/json
+
+{
+    "first_name": "Иван",
+    "last_name": "Иванов",
+    "phone_number": "+79991234567",
+    "email": "ivan@example.com",
+    "address": "Москва, ул. Примерная, 1",
+    "login": "Ivan",
+    "password": "qwerty123233"
+}
+
+### 1.3 Получить конкретного пользователя (замените <id> на реальный ID)
+GET http://127.0.0.1:8000/api/user/2/
+Content-Type: application/json
+
+### 1.4 Обновить пользователя (PUT - полное обновление, PATCH - частичное)
+PATCH  http://127.0.0.1:8000/api/user/1/
+Content-Type: application/json
+
+{
+    "first_name": "Иван",
+    "last_name": "Иванов",
+    "phone_number": "+79991234567",
+    "email": "ivan.new@example.com",
+    "address": "Москва, ул. Обновлённая, 2"
+}
+
+### 1.5 Удаление пользователя
+DELETE http://127.0.0.1:8000/api/user/12/
+Content-Type: application/json
+
+
+
+### 2.1 Получение категорий
+GET http://127.0.0.1:8000/api/categories/
+
+### 2.2. Создание категории
+POST http://127.0.0.1:8000/api/categories/
+Content-Type: application/json
+
+{
+    "title": "Химия"
+} 
+
+### 2.3 Обновление названия категории
+PATCH http://127.0.0.1:8000/api/categories/1/
+Content-Type: application/json
+
+{
+    "title": "Бытовая техника"
+}
+
+### 2.4 Удаление категории
+DELETE http://127.0.0.1:8000/api/categories/1/
+
+
+### 3.1 Получить все магазины
+GET http://127.0.0.1:8000/api/shops/
+
+### 3.2 Создать магазин
+POST http://127.0.0.1:8000/api/shops/
+
+Content-Type: application/json
+
+{
+    "title": "Мой магазин",
+    "description": "Лучший магазин",
+    "url": "https://example.com",
+    "user_id": 13
+}
