@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserCredentials, Category, Shop
+from .models import User, UserCredentials, Category, Shop, Product
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,3 +39,19 @@ class ShopDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ['id', 'title', 'description', 'url', 'user']
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    shop = serializers.PrimaryKeyRelatedField(queryset=Shop.objects.all())
+    
+    class Meta:
+        model = Product
+        fields = ['id', 'title', 'category', 'description', 'shop', 'quantity', 'price']
+
+    def to_representation(self, instance):
+        """Переопределяем вывод для получения вложенных данных при GET"""
+        response = super().to_representation(instance)
+        response['category'] = CategorySerializer(instance.category).data
+        response['shop'] = ShopDetailSerializer(instance.shop).data
+        return response

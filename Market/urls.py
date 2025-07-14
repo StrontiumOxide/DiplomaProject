@@ -17,4 +17,8 @@ urlpatterns = [
         # Shop
     path(route='shops/', view=views.ShopView.as_view()), # GET(list), POST
     path(route='shops/<int:pk>/', view=views.ShopView.as_view()), # GET(detail), PATCH, DELETE
+
+        # Product
+    path(route='products/', view=views.ProductView.as_view(), name='products'), # GET(list), POST
+    path(route='products/<int:pk>/', view=views.ProductView.as_view(), name='product-detail'), # GET(detail), PATCH, DELETE
 ]
