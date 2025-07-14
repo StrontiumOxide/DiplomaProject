@@ -7,7 +7,7 @@ POST http://127.0.0.1:8000/api/user/
 Content-Type: application/json
 
 {
-    "first_name": "Ив",
+    "first_name": "Иван",
     "last_name": "Иванов",
     "phone_number": "+79991234567",
     "email": "ivan@example.com",
@@ -17,11 +17,11 @@ Content-Type: application/json
 }
 
 ### 1.3 Получить конкретного пользователя (замените <id> на реальный ID)
-GET http://127.0.0.1:8000/api/user/140/
+GET http://127.0.0.1:8000/api/user/37/
 Content-Type: application/json
 
 ### 1.4 Обновить пользователя (PUT - полное обновление, PATCH - частичное)
-PATCH  http://127.0.0.1:8000/api/user/1/
+PATCH  http://127.0.0.1:8000/api/user/13/
 Content-Type: application/json
 
 {
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### 1.5 Удаление пользователя
-DELETE http://127.0.0.1:8000/api/user/14/
+DELETE http://127.0.0.1:8000/api/user/20/
 Content-Type: application/json
 
 
@@ -58,7 +58,7 @@ Content-Type: application/json
 }
 
 ### 2.4 Удаление категории
-DELETE http://127.0.0.1:8000/api/categories/1/
+DELETE http://127.0.0.1:8000/api/categories/2/
 
 
 ### 3.1 Получить все магазины
@@ -72,7 +72,7 @@ Content-Type: application/json
     "title": "Электротехника М2",
     "description": "Описание моего магазина",
     "url": "https://my-shop.example.com",
-    "user_id": 13
+    "user_id": 1
 }
 
 ### 3.3 Обновление магазина
@@ -83,11 +83,11 @@ Content-Type: application/json
     "title": "Химия для дачи",
     "description": "Описание моего магазина",
     "url": "https://my-shop.example.com",
-    "user_id": 13
+    "user_id": 1
 }
 
 ### 3.4 Удаление магазина
-DELETE http://127.0.0.1:8000/api/shops/5/
+DELETE http://127.0.0.1:8000/api/shops/4/
 
 
 ### 4.1 Получение продукта
@@ -99,12 +99,12 @@ POST http://127.0.0.1:8000/api/products/
 Content-Type: application/json
 
 {
-  "title": "Станок МФУ",
-  "category": 3,
+  "title": "Бензопила",
+  "category": 1,
   "description": "Делает всё",
-  "shop": 3,
-  "quantity": 100,
-  "price": 5000
+  "shop": 1,
+  "quantity": 1,
+  "price": 1000
 }
 
 ### 4.3 Обновление продукта
@@ -119,3 +119,42 @@ Content-Type: application/json
 
 ### 4.4 Удаление продукта
 DELETE http://127.0.0.1:8000/api/products/9/
+
+
+### 5.1 Получение корзины
+GET http://127.0.0.1:8000/api/buskets/39/
+
+
+### 5.2 Добавление товара в корзину пользователя
+POST http://127.0.0.1:8000/api/buskets/
+Content-Type: application/json
+
+{
+  "user": 1,
+  "product": 1,
+  "quantity": 1
+}
+
+### 5.3 Удаление товара из корзины
+DELETE http://127.0.0.1:8000/api/buskets/
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "product_id": 1
+}
+
+
+### 6.1 Получение заказов пользователя
+GET http://127.0.0.1:8000/api/orders/user/1/
+
+### 6.2 Создание заказа пользователем
+POST http://127.0.0.1:8000/api/orders/
+Content-Type: application/json
+
+{
+  "user": 1
+}
+
+### 6.3 Удаление заказа пользователя
+DELETE http://127.0.0.1:8000/api/orders/1/

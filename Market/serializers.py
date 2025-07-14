@@ -1,5 +1,14 @@
 from rest_framework import serializers
-from .models import User, UserCredentials, Category, Shop, Product
+from .models import (
+    User, 
+    UserCredentials, 
+    Category, 
+    Shop, 
+    Product, 
+    Busket, 
+    Order, 
+    OrderPosition
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,3 +64,44 @@ class ProductSerializer(serializers.ModelSerializer):
         response['category'] = CategorySerializer(instance.category).data
         response['shop'] = ShopDetailSerializer(instance.shop).data
         return response
+
+
+class BusketSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    
+    class Meta:
+        model = Busket
+        fields = ['id', 'user', 'product', 'quantity']
+        
+    def to_representation(self, instance):
+        """Добавляем детализированные данные при выводе"""
+        from .serializers import UserSerializer  # Ленивый импорт чтобы избежать циклических зависимостей
+        
+        data = super().to_representation(instance)
+        data['user'] = UserSerializer(instance.user).data
+        data['product'] = {
+            'id': instance.product.id,
+            'title': instance.product.title,
+            'price': instance.product.price
+        }
+        return data
+    
+
+class OrderPositionSerializer(serializers.ModelSerializer):
+    product_title = serializers.CharField(source='product.title', read_only=True)
+    product_price = serializers.IntegerField(source='product.price', read_only=True)
+
+    class Meta:
+        model = OrderPosition
+        fields = ['id', 'product', 'product_title', 'product_price', 'quantity']
+
+class OrderSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    positions = OrderPositionSerializer(many=True, read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)  # Явно указываем поле
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'user_email', 'created_at', 'status', 'positions']
+        read_only_fields = ['created_at']  # Поле только для чтения

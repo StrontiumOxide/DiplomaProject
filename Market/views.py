@@ -1,16 +1,29 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.db import transaction
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from .models import User, UserCredentials, Category, Shop, Product
+from .models import (
+    User, 
+    UserCredentials, 
+    Category, 
+    Shop, 
+    Product, 
+    Busket, 
+    Order, 
+    OrderPosition
+)
 from .serializers import (
     UserSerializer, 
     CategorySerializer,
     ShopCreateSerializer, 
     ShopDetailSerializer, 
-    ProductSerializer
+    ProductSerializer,
+    BusketSerializer,
+    OrderSerializer
 )
 
 
@@ -349,4 +362,168 @@ class ProductView(APIView):
                 {"error": "Товар не найден"},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+class BusketView(APIView):
+    """
+    API для работы с корзиной пользователя
+    Поддерживает методы: GET (по user_id), POST, DELETE
+    """
+    
+    def get(self, request, user_id, format=None):
+        """
+        Получение корзины пользователя по ID
+        """
+        user = get_object_or_404(User, id=user_id)
+        queryset = Busket.objects.filter(user=user)
+        serializer = BusketSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        """
+        Добавление товара в корзину с проверкой:
+        1. Что товар существует
+        2. Что товара достаточно на складе
+        3. Что товар еще не добавлен в корзину
+        """
+        serializer = BusketSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            product = serializer.validated_data['product']
+            quantity = serializer.validated_data['quantity']
+            
+            # Проверка наличия товара в магазине
+            if product.quantity < quantity:
+                return Response(
+                    {
+                        "error": f"Недостаточно товара. Доступно: {product.quantity}",
+                        "available": product.quantity
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Проверка на дубликат
+            if Busket.objects.filter(user=user, product=product).exists():
+                return Response(
+                    {"error": "Этот товар уже есть в корзине"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, format=None):
+        """
+        Удаление продукта из корзины
+        Требуемые параметры: user_id и product_id в теле запроса
+        """
+        try:
+            user_id = request.data.get('user_id')
+            product_id = request.data.get('product_id')
+            
+            if not user_id or not product_id:
+                return Response(
+                    {"error": "Требуются user_id и product_id"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            busket_item = Busket.objects.get(user_id=user_id, product_id=product_id)
+            busket_item.delete()
+            return Response(
+                {"message": "Товар удален"},
+                status=status.HTTP_200_OK
+                )
+            
+        except Busket.DoesNotExist:
+            return Response(
+                {"error": "Товар не найден в корзине"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+
+class OrderView(APIView):
+    def get(self, request, user_id=None):
+        """
+        Получение всех заказов пользователя
+        GET /api/orders/?user_id=<id>
+        """
+        if not user_id:
+            return Response(
+                {"error": "Не указан user_id"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        orders = Order.objects.filter(user_id=user_id).prefetch_related('positions')
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+
+    @transaction.atomic
+    def post(self, request):
+        """
+        Создание заказа из корзины
+        POST /api/orders/ { "user": <id> }
+        """
+        try:
+            user_id = request.data.get('user')
+            if not user_id:
+                return Response(
+                    {"error": "Требуется ID пользователя"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user = get_object_or_404(User, id=user_id)
+            busket_items = Busket.objects.filter(user=user)
+            
+            if not busket_items.exists():
+                return Response(
+                    {"error": "Корзина пуста"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            order = Order.objects.create(user=user, status='created')
+            not_added_items = []
+            
+            for item in busket_items:
+                if item.product.quantity >= item.quantity:
+                    OrderPosition.objects.create(
+                        order=order,
+                        product=item.product,
+                        quantity=item.quantity
+                    )
+                    item.product.quantity -= item.quantity
+                    item.product.save()
+                    item.delete()
+                else:
+                    not_added_items.append({
+                        "product_id": item.product.id,
+                        "available": item.product.quantity,
+                        "requested": item.quantity
+                    })
+
+            response_data = {
+                "order_id": order.id,
+                "status": order.status,
+                "not_added": not_added_items
+            }
+
+            if not_added_items:
+                response_data["warning"] = "Некоторые товары остались в корзине из-за недостатка на складе"
+
+            return Response(response_data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    def delete(self, request, order_id):
+        """
+        Удаление заказа
+        DELETE /api/orders/<id>/
+        """
+        order = get_object_or_404(Order, id=order_id)
+        order.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

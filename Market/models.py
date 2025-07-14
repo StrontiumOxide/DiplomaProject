@@ -104,9 +104,15 @@ class Busket(models.Model):
 class Order(models.Model):
     """Стандартная модель заказа"""
 
+    STATUS_CHOICES = [
+        ('created', 'Создан'),
+        ('completed', 'Завершен'),
+        ('canceled', 'Отменен'),
+    ]
+
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name='Покупатель', related_name='orders')
     create_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
-    status = models.BooleanField(verbose_name='Статус доставки')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='created')
 
     class Meta:
         verbose_name = 'Заказ'
