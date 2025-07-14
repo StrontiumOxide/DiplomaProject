@@ -30,7 +30,7 @@ from .serializers import (
 def main_page(request: HttpRequest) -> HttpResponse:
     """Функция, отвечающая за отображение главной страницы"""
 
-    return render(request=request, template_name='market/main_page.html')
+    return render(request=request, template_name='market/main_page_2.html')
 
 
 @api_view(http_method_names=['GET'])

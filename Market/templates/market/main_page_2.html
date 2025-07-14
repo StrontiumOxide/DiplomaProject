@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зелёный кролик - API Документация</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #4caf50;
+            --light-color: #e8f5e9;
+            --dark-color: #1b5e20;
+            --accent-color: #8bc34a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .slogan {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            animation: slideUp 0.8s ease;
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-header i {
+            margin-right: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .method {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .method:last-child {
+            border-bottom: none;
+        }
+        
+        .method-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .method-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .get { background: #4caf50; color: white; }
+        .post { background: #2196f3; color: white; }
+        .patch { background: #ff9800; color: white; }
+        .delete { background: #f44336; color: white; }
+        
+        .method-url {
+            font-family: 'Courier New', monospace;
+            background: var(--light-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            display: block;
+            overflow-x: auto;
+        }
+        
+        .method-body {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .icon {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1 class="logo">Зелёный кролик</h1>
+        <p class="slogan">Прыгаем в мир технологий с морковкой в руках!</p>
+    </header>
+    
+    <div class="container">
+        <!-- Пользователи -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-users"></i>
+                <h2>Пользователи</h2>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить список всех пользователей</h3>
+                </div>
+                <code class="method-url">/api/users/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type post">POST</span>
+                    <h3>Создать нового пользователя</h3>
+                </div>
+                <code class="method-url">/api/user/</code>
+                <div class="method-body">
+{
+    "first_name": "Иван",
+    "last_name": "Иванов",
+    "phone_number": "+79991234567",
+    "email": "ivan@example.com",
+    "address": "Москва, ул. Примерная, 1",
+    "login": "Ivan",
+    "password": "qwerty123233"
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить конкретного пользователя</h3>
+                </div>
+                <code class="method-url">/api/user/&lt;id&gt;/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type patch">PATCH</span>
+                    <h3>Обновить пользователя</h3>
+                </div>
+                <code class="method-url">/api/user/&lt;id&gt;/</code>
+                <div class="method-body">
+{
+    "first_name": "Иван",
+    "last_name": "Иванов",
+    "phone_number": "+79991234567",
+    "email": "ivan.new@example.com",
+    "address": "Москва, ул. Обновлённая, 2"
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type delete">DELETE</span>
+                    <h3>Удалить пользователя</h3>
+                </div>
+                <code class="method-url">/api/user/&lt;id&gt;/</code>
+            </div>
+        </div>
+        
+        <!-- Категории -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-tags"></i>
+                <h2>Категории</h2>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить список категорий</h3>
+                </div>
+                <code class="method-url">/api/categories/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type post">POST</span>
+                    <h3>Создать категорию</h3>
+                </div>
+                <code class="method-url">/api/categories/</code>
+                <div class="method-body">
+{
+    "title": "Стройматериалы"
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type patch">PATCH</span>
+                    <h3>Обновить категорию</h3>
+                </div>
+                <code class="method-url">/api/categories/&lt;id&gt;/</code>
+                <div class="method-body">
+{
+    "title": "Бытовая техника"
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type delete">DELETE</span>
+                    <h3>Удалить категорию</h3>
+                </div>
+                <code class="method-url">/api/categories/&lt;id&gt;/</code>
+            </div>
+        </div>
+        
+        <!-- Магазины -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-store"></i>
+                <h2>Магазины</h2>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить список магазинов</h3>
+                </div>
+                <code class="method-url">/api/shops/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type post">POST</span>
+                    <h3>Создать магазин</h3>
+                </div>
+                <code class="method-url">/api/shops/</code>
+                <div class="method-body">
+{
+    "title": "Электротехника М2",
+    "description": "Описание моего магазина",
+    "url": "https://my-shop.example.com",
+    "user_id": 1
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type patch">PATCH</span>
+                    <h3>Обновить магазин</h3>
+                </div>
+                <code class="method-url">/api/shops/&lt;id&gt;/</code>
+                <div class="method-body">
+{
+    "title": "Химия для дачи",
+    "description": "Описание моего магазина",
+    "url": "https://my-shop.example.com",
+    "user_id": 1
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type delete">DELETE</span>
+                    <h3>Удалить магазин</h3>
+                </div>
+                <code class="method-url">/api/shops/&lt;id&gt;/</code>
+            </div>
+        </div>
+        
+        <!-- Товары -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-shopping-basket"></i>
+                <h2>Товары</h2>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить список товаров</h3>
+                </div>
+                <code class="method-url">/api/products/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type post">POST</span>
+                    <h3>Создать товар</h3>
+                </div>
+                <code class="method-url">/api/products/</code>
+                <div class="method-body">
+{
+    "title": "Бензопила",
+    "category": 1,
+    "description": "Делает всё",
+    "shop": 1,
+    "quantity": 1,
+    "price": 1000
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type patch">PATCH</span>
+                    <h3>Обновить товар</h3>
+                </div>
+                <code class="method-url">/api/products/&lt;id&gt;/</code>
+                <div class="method-body">
+{
+    "title": "МФУ",
+    "price": 1000000,
+    "quantity": 1
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type delete">DELETE</span>
+                    <h3>Удалить товар</h3>
+                </div>
+                <code class="method-url">/api/products/&lt;id&gt;/</code>
+            </div>
+        </div>
+        
+        <!-- Корзина -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-shopping-cart"></i>
+                <h2>Корзина</h2>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить корзину</h3>
+                </div>
+                <code class="method-url">/api/buskets/&lt;user_id&gt;/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type post">POST</span>
+                    <h3>Добавить товар в корзину</h3>
+                </div>
+                <code class="method-url">/api/buskets/</code>
+                <div class="method-body">
+{
+    "user": 1,
+    "product": 1,
+    "quantity": 1
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type delete">DELETE</span>
+                    <h3>Удалить товар из корзины</h3>
+                </div>
+                <code class="method-url">/api/buskets/</code>
+                <div class="method-body">
+{
+    "user_id": 1,
+    "product_id": 1
+}</div>
+            </div>
+        </div>
+        
+        <!-- Заказы -->
+        <div class="section">
+            <div class="section-header">
+                <i class="fas fa-clipboard-list"></i>
+                <h2>Заказы</h2>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type get">GET</span>
+                    <h3>Получить заказы пользователя</h3>
+                </div>
+                <code class="method-url">/api/orders/user/&lt;user_id&gt;/</code>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type post">POST</span>
+                    <h3>Создать заказ</h3>
+                </div>
+                <code class="method-url">/api/orders/</code>
+                <div class="method-body">
+{
+    "user": 1
+}</div>
+            </div>
+            
+            <div class="method">
+                <div class="method-title">
+                    <span class="method-type delete">DELETE</span>
+                    <h3>Удалить заказ</h3>
+                </div>
+                <code class="method-url">/api/orders/&lt;id&gt;/</code>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Зелёный кролик. Все права защищены.</p>
+        <p>Создатель: Дорофеев Денис Васильевич</p>
+    </footer>
+</body>
+</html>
